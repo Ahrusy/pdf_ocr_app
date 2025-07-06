@@ -9,7 +9,7 @@
             <a href="#converter" class="btn-primary btn-large">Попробовать бесплатно</a>
         </div>
         <div class="hero-image">
-            <img src="{{ url_for('static', filename='images/hero.png') }}" alt="Конвертер PDF в текст">
+            <img src="{{ url_for('static', filename='images/hero.png') }}" alt="Конвертер PDF в текст" onerror="this.style.display='none'">
         </div>
     </div>
 </section>
@@ -17,15 +17,15 @@
 <section class="stats">
     <div class="container">
         <div class="stat-item">
-            <div class="stat-number">{{ stats.users|number_format }}</div>
+            <div class="stat-number">{{ "{:,}".format(stats.users).replace(",", " ") }}</div>
             <div class="stat-label">пользователей</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">{{ stats.conversions|number_format }}</div>
+            <div class="stat-number">{{ "{:,}".format(stats.conversions).replace(",", " ") }}</div>
             <div class="stat-label">конвертаций</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">{{ stats.premium|number_format }}</div>
+            <div class="stat-number">{{ "{:,}".format(stats.premium).replace(",", " ") }}</div>
             <div class="stat-label">премиум аккаунтов</div>
         </div>
     </div>
@@ -35,16 +35,31 @@
     <div class="container">
         <h2>Конвертировать файл</h2>
         <div class="converter-box">
-            <form method="post" enctype="multipart/form-data" action="{{ url_for('upload_file') }}" class="upload-form">
+            <form method="post" enctype="multipart/form-data" action="{{ url_for('upload_file') }}" class="upload-form" id="upload-form">
                 <div class="file-upload-area">
                     <input type="file" name="file" id="file-upload" accept=".pdf,.png,.jpg,.jpeg" required>
                     <label for="file-upload" class="file-upload-label">
-                        <img src="{{ url_for('static', filename='images/upload-icon.png') }}" alt="Загрузить">
-                        <span>Перетащите файл или нажмите для выбора</span>
-                        <small>Поддерживаемые форматы: PDF, PNG, JPG (до 5MB для бесплатных пользователей)</small>
+                        <div class="upload-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#4361ee" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <span id="file-name">Выберите файл или перетащите его сюда</span>
+                        <small>Поддерживаемые форматы: PDF, PNG, JPG (до {{ config.FREE_FILE_SIZE_LIMIT }}MB)</small>
                     </label>
+                    <div class="progress-container" id="progress-container" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress" id="progress"></div>
+                        </div>
+                        <span id="progress-text">0%</span>
+                    </div>
                 </div>
-                <button type="submit" class="btn-primary btn-large">Преобразовать в текст</button>
+                <button type="submit" class="btn-primary btn-large" id="submit-btn">
+                    <span id="btn-text">Преобразовать в текст</span>
+                    <span id="spinner" style="display: none;">⌛</span>
+                </button>
             </form>
         </div>
     </div>

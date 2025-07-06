@@ -2,11 +2,11 @@
 
 {% block content %}
 <div class="container">
-    <h2>Extracted Text</h2>
+    <h2>Извлеченный текст</h2>
     {% if not is_premium %}
-        <div class="premium-banner">
-            <p>You're using the free version. <a href="{{ url_for('premium') }}">Upgrade to Premium</a> for full access.</p>
-        </div>
+    <div class="premium-banner">
+        <p>Вы используете бесплатную версию. <a href="{{ url_for('premium') }}">Перейдите на Премиум</a> для полного доступа.</p>
+    </div>
     {% endif %}
 
     <div class="text-result">
@@ -14,8 +14,8 @@
     </div>
 
     <div class="actions">
-        <button onclick="copyToClipboard()">Copy Text</button>
-        <a href="{{ url_for('index') }}" class="button">Convert Another File</a>
+        <button onclick="copyToClipboard()" class="btn-primary">Копировать текст</button>
+        <a href="{{ url_for('index') }}" class="btn-outline">Конвертировать другой файл</a>
     </div>
 </div>
 
@@ -24,7 +24,15 @@
         const textarea = document.querySelector('textarea');
         textarea.select();
         document.execCommand('copy');
-        alert('Text copied to clipboard!');
+
+        // Временное изменение текста кнопки
+        const btn = document.querySelector('.actions button');
+        const originalText = btn.textContent;
+        btn.textContent = 'Текст скопирован!';
+
+        setTimeout(() => {
+            btn.textContent = originalText;
+        }, 2000);
     }
 </script>
 {% endblock %}

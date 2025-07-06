@@ -14,6 +14,17 @@ from logging.handlers import RotatingFileHandler
 app = Flask(__name__)
 app.config.from_object(Config)
 
+
+# Добавляем фильтр для форматирования чисел
+@app.template_filter('number_format')
+def number_format(value):
+    """Фильтр для форматирования чисел с разделителями тысяч"""
+    try:
+        return "{:,}".format(int(value)).replace(",", " ")
+    except (ValueError, TypeError):
+        return value
+
+
 # Настройка логирования
 handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
 handler.setLevel(logging.INFO)
@@ -237,7 +248,7 @@ def upload_file():
                                filename=filename)
 
     except Exception as e:
-        if os.path.exists(filepath):
+        if 'filepath' in locals() and os.path.exists(filepath):
             os.remove(filepath)
         app.logger.error(f"File processing error: {str(e)}")
         flash('Произошла ошибка при обработке файла. Пожалуйста, попробуйте другой файл.', 'error')
@@ -379,3 +390,20 @@ def internal_error(e):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """Обработка 404 ошибки"""
+    try:
+        return render_template('404.html'), 404
+    except:
+        return "<h1>Страница не найдена</h1><p>Запрашиваемая страница не существует.</p>", 404
+
+@app.errorhandler(500)
+def internal_error(e):
+    """Обработка 500 ошибки"""
+    app.logger.error(f"500 error: {str(e)}")
+    try:
+        return render_template('500.html'), 500
+    except:
+        return "<h1>Внутренняя ошибка сервера</h1><p>Пожалуйста, попробуйте позже.</p>", 500
