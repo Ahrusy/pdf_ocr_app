@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Extracted Text</h2>
+    {% if not is_premium %}
+        <div class="premium-banner">
+            <p>You're using the free version. <a href="{{ url_for('premium') }}">Upgrade to Premium</a> for full access.</p>
+        </div>
+    {% endif %}
+
+    <div class="text-result">
+        <textarea readonly>{{ text }}</textarea>
+    </div>
+
+    <div class="actions">
+        <button onclick="copyToClipboard()">Copy Text</button>
+        <a href="{{ url_for('index') }}" class="button">Convert Another File</a>
+    </div>
+</div>
+
+<script>
+    function copyToClipboard() {
+        const textarea = document.querySelector('textarea');
+        textarea.select();
+        document.execCommand('copy');
+        alert('Text copied to clipboard!');
+    }
+</script>
+{% endblock %}

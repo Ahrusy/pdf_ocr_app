@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1>Преобразуйте PDF и изображения в текст за секунды</h1>
+            <p class="subtitle">Мощный инструмент для извлечения текста с поддержкой русского языка</p>
+            <a href="#converter" class="btn-primary btn-large">Попробовать бесплатно</a>
+        </div>
+        <div class="hero-image">
+            <img src="{{ url_for('static', filename='images/hero.png') }}" alt="Конвертер PDF в текст">
+        </div>
+    </div>
+</section>
+
+<section class="stats">
+    <div class="container">
+        <div class="stat-item">
+            <div class="stat-number">{{ stats.users|number_format }}</div>
+            <div class="stat-label">пользователей</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ stats.conversions|number_format }}</div>
+            <div class="stat-label">конвертаций</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ stats.premium|number_format }}</div>
+            <div class="stat-label">премиум аккаунтов</div>
+        </div>
+    </div>
+</section>
+
+<section id="converter" class="converter-section">
+    <div class="container">
+        <h2>Конвертировать файл</h2>
+        <div class="converter-box">
+            <form method="post" enctype="multipart/form-data" action="{{ url_for('upload_file') }}" class="upload-form">
+                <div class="file-upload-area">
+                    <input type="file" name="file" id="file-upload" accept=".pdf,.png,.jpg,.jpeg" required>
+                    <label for="file-upload" class="file-upload-label">
+                        <img src="{{ url_for('static', filename='images/upload-icon.png') }}" alt="Загрузить">
+                        <span>Перетащите файл или нажмите для выбора</span>
+                        <small>Поддерживаемые форматы: PDF, PNG, JPG (до 5MB для бесплатных пользователей)</small>
+                    </label>
+                </div>
+                <button type="submit" class="btn-primary btn-large">Преобразовать в текст</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="benefits">
+    <div class="container">
+        <h2>Почему выбирают PDFPro?</h2>
+        <div class="benefits-grid">
+            {% for benefit in config.BENEFITS %}
+            <div class="benefit-card">
+                <div class="benefit-icon">✓</div>
+                <h3>{{ benefit }}</h3>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-box">
+            <h2>Готовы работать эффективнее?</h2>
+            <p>Перейдите на премиум и снимите все ограничения</p>
+            <a href="{{ url_for('premium') }}" class="btn-primary btn-large">Попробовать премиум</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

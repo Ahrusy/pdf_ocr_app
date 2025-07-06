@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конвертер PDF и изображений в текст{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">PDF<span>Pro</span></div>
+            <nav>
+                {% if 'user_id' in session %}
+                    <div class="user-info">
+                        <span>Привет, {{ get_user_info(session['user_id'])[0] }}!</span>
+                        {% if session['is_premium'] %}
+                            <span class="premium-badge">Премиум</span>
+                        {% endif %}
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="btn-outline">Выйти</a>
+                    {% if not session['is_premium'] %}
+                        <a href="{{ url_for('premium') }}" class="btn-primary">Премиум</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn-outline">Вход</a>
+                    <a href="{{ url_for('register') }}" class="btn-primary">Регистрация</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flashes">
+                    {% for message in messages %}
+                        <div class="flash">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PDFPro</h3>
+                    <p>Лучшее решение для преобразования документов в текст с 2023 года</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p>support@pdfpro.ru</p>
+                    <p>+7 (495) 123-45-67</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Подписка</h3>
+                    <p>Получайте специальные предложения</p>
+                    <form class="subscribe-form">
+                        <input type="email" placeholder="Ваш email">
+                        <button type="submit">Подписаться</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 PDFPro. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
